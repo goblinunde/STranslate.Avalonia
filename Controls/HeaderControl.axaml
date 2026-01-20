@@ -1,0 +1,112 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:STranslate.Avalonia.Controls">
+
+    <!-- 💡 HeaderControl样式定义 - 顶部工具栏 -->
+    <Style Selector="controls|HeaderControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="PART_Border"
+                        Padding="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    
+                    <DockPanel>
+                        <!-- 💡 左侧: 置顶按钮 -->
+                        <controls:IconButton
+                            Icon="📌"
+                            Type="Toggle"
+                            IsOn="{TemplateBinding IsTopmost, Mode=TwoWay}"
+                            ToolTip.Tip="置顶窗口"
+                            DockPanel.Dock="Left"/>
+
+                        <!-- 💡 右侧: 功能按钮组 -->
+                        <StackPanel DockPanel.Dock="Right"
+                                    Orientation="Horizontal"
+                                    Spacing="3">
+                            
+                            <!-- 设置按钮 -->
+                            <controls:IconButton
+                                Icon="⚙️"
+                                Command="{TemplateBinding SettingCommand}"
+                                ToolTip.Tip="设置"
+                                IsVisible="{TemplateBinding IsSettingVisible}"/>
+
+                            <!-- 历史导航: 下一条 -->
+                            <controls:IconButton
+                                Icon="➡️"
+                                Command="{TemplateBinding HistoryNextCommand}"
+                                ToolTip.Tip="下一条"
+                                CornerRadius="6,0,0,6"
+                                BorderThickness="1,1,0,1"
+                                IsVisible="{TemplateBinding IsHistoryNavigationVisible}"/>
+
+                            <!-- 历史导航: 上一条 -->
+                            <controls:IconButton
+                                Icon="⬅️"
+                                Command="{TemplateBinding HistoryPreviousCommand}"
+                                ToolTip.Tip="上一条"
+                                CornerRadius="0,6,6,0"
+                                Margin="-2.5,0,0,0"
+                                IsVisible="{TemplateBinding IsHistoryNavigationVisible}"/>
+
+                            <!-- 隐藏输入框 -->
+                            <controls:IconButton
+                                Icon="👁️"
+                                Type="Toggle"
+                                IsOn="{TemplateBinding IsHideInput, Mode=TwoWay}"
+                                ToolTip.Tip="显示/隐藏输入框"
+                                IsVisible="{TemplateBinding IsHideInputVisible}"/>
+
+                            <!-- 主题切换 -->
+                            <controls:IconButton
+                                Icon="🎨"
+                                Command="{TemplateBinding ColorSchemeCommand}"
+                                ToolTip.Tip="切换主题"
+                                IsVisible="{TemplateBinding IsColorSchemeVisible}"/>
+
+                            <!-- 鼠标钩子翻译 -->
+                            <controls:IconButton
+                                Icon="🖱️"
+                                Type="Toggle"
+                                IsOn="{TemplateBinding IsMouseHook, Mode=TwoWay}"
+                                ToolTip.Tip="鼠标划词翻译"
+                                IsVisible="{TemplateBinding IsMouseHookVisible}"/>
+
+                            <!-- 截图翻译 -->
+                            <controls:IconButton
+                                Icon="📷"
+                                Type="Toggle"
+                                Command="{TemplateBinding ScreenshotTranslateCommand}"
+                                IsOn="{TemplateBinding ScreenshotTranslateInImage, Mode=TwoWay}"
+                                RequireCtrlToToggle="True"
+                                ToolTip.Tip="截图翻译 (Ctrl+点击切换模式)"
+                                IsVisible="{TemplateBinding IsScreenshotTranslateInImageVisible}"/>
+
+                            <!-- OCR -->
+                            <controls:IconButton
+                                Icon="🔍"
+                                Command="{TemplateBinding OcrCommand}"
+                                ToolTip.Tip="OCR识别"
+                                IsVisible="{TemplateBinding IsOcrVisible}"/>
+
+                            <!-- 自动翻译 -->
+                            <controls:IconButton
+                                Icon="🔄"
+                                Type="Toggle"
+                                IsOn="{TemplateBinding IsAutoTranslate, Mode=TwoWay}"
+                                ToolTip.Tip="自动翻译"
+                                IsVisible="{TemplateBinding IsAutoTranslateVisible}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

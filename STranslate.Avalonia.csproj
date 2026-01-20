@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <!-- 💡 app.manifest 是 Windows 特定文件，Linux 不需要 -->
+    <!-- 💡 临时禁用编译绑定，因为ViewModel还未迁移 -->
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <!-- 💡 临时排除未迁移的WPF代码文件,逐步迁移 -->
+  <ItemGroup>
+    <Compile Remove="Converters\**\*.cs" />
+    <Compile Remove="Helpers\**\*.cs" />
+    
+    <!-- Core: 只保留无WPF依赖的基础文件 -->
+    <Compile Remove="Core\AudioPlayer.cs" />
+    <Compile Remove="Core\AutoLogger.cs" />
+    <Compile Remove="Core\BackupSettings.cs" />
+    <Compile Remove="Core\DataProvider.cs" />
+    <Compile Remove="Core\DebounceExecutor.cs" />
+    <Compile Remove="Core\DropdownDataGeneric.cs" />
+    <Compile Remove="Core\ExternalCallService.cs" />
+    <Compile Remove="Core\FilesFolders.cs" />
+    <Compile Remove="Core\Helper.cs" />
+    <Compile Remove="Core\HotkeyModel.cs" />
+    <Compile Remove="Core\HotkeySettings.cs" />
+    <Compile Remove="Core\HttpService.cs" />
+    <Compile Remove="Core\IPluginSavable.cs" />
+    <Compile Remove="Core\IScreenshot.cs" />
+    <Compile Remove="Core\ISingleInstanceApp.cs" />
+    <Compile Remove="Core\Internationalization.cs" />
+    <Compile Remove="Core\Notification.cs" />
+    <Compile Remove="Core\OcrWord.cs" />
+    <Compile Remove="Core\PInvokeExtensions.cs" />
+    <Compile Remove="Core\PluginAssemblyLoader.cs" />
+    <Compile Remove="Core\PluginContext.cs" />
+    <Compile Remove="Core\PluginManager.cs" />
+    <Compile Remove="Core\PluginStorage.cs" />
+    <Compile Remove="Core\ProxySettings.cs" />
+    <Compile Remove="Core\Screenshot.cs" />
+    <Compile Remove="Core\ServiceManager.cs" />
+    <Compile Remove="Core\ServiceSettings.cs" />
+    <Compile Remove="Core\Settings.cs" />
+    <Compile Remove="Core\Snackbar.cs" />
+    <Compile Remove="Core\SpecialKeyState.cs" />
+    <Compile Remove="Core\SqlService.cs" />
+    <Compile Remove="Core\StorageBase.cs" />
+    <Compile Remove="Core\UpdaterService.cs" />
+    <Compile Remove="Core\Utilities.cs" />
+    <Compile Remove="Core\AppStorage.cs" />
+    
+    <!-- Services: 只排除原WPF服务，允许新Services编译 -->
+    <Compile Remove="Services\BaseService.cs" />
+    <Compile Remove="Services\BackupService.cs" />
+    <Compile Remove="Services\OcrService.cs" />
+    <Compile Remove="Services\PluginInstance.cs" />
+    <Compile Remove="Services\TranslateService.cs" />
+    <Compile Remove="Services\TtsService.cs" />
+    <Compile Remove="Services\VocabularyService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.2" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.2" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.2" />
+    
+    <!-- 💡 全局快捷键支持 (Linux) -->
+    <PackageReference Include="SharpHook" Version="5.3.7" />
+    
+    <!-- 💡 原 STranslate 依赖 (完全兼容) -->
+    <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+</Project>

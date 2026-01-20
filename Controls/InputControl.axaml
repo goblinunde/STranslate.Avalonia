@@ -1,0 +1,141 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:STranslate.Avalonia.Controls">
+
+    <!-- 💡 InputControl样式定义 - 翻译输入控件 -->
+    <Style Selector="controls|InputControl">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10,5,6,6"/>
+        <Setter Property="MinHeight" Value="80"/>
+        <Setter Property="MaxHeight" Value="200"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- 💡 文本输入框 -->
+                        <TextBox x:Name="PART_TextBox"
+                                 MinHeight="{TemplateBinding MinHeight}"
+                                 MaxHeight="{TemplateBinding MaxHeight}"
+                                 Margin="{TemplateBinding Margin}"
+                                 Padding="{TemplateBinding Padding}"
+                                 AcceptsReturn="True"
+                                 Background="Transparent"
+                                 BorderBrush="Transparent"
+                                 BorderThickness="0"
+                                 Text="{TemplateBinding Text, Mode=TwoWay}"
+                                 FontSize="{TemplateBinding CurrentFontSize}"
+                                 TextWrapping="Wrap"
+                                 Watermark="输入要翻译的文本...">
+                            <!-- 💡 Enter/Ctrl+Enter快捷键 -->
+                            <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{TemplateBinding ExecuteCommand}"/>
+                                <KeyBinding Gesture="Ctrl+Enter" Command="{TemplateBinding ForceExecuteCommand}" CommandParameter="force"/>
+                            </TextBox.KeyBindings>
+                        </TextBox>
+
+                        <!-- 💡 工具栏按钮 -->
+                        <StackPanel Grid.Row="1"
+                                    Margin="6,2"
+                                    Orientation="Horizontal"
+                                    Spacing="4">
+                            
+                            <!-- 保存到单词本 -->
+                            <controls:IconButton
+                                Icon="📖"
+                                Command="{TemplateBinding SaveToVocabularyCommand}"
+                                CommandParameter="{TemplateBinding Text}"
+                                ToolTip.Tip="保存到单词本"
+                                IsVisible="{TemplateBinding HasActivedVocabulary}"/>
+
+                            <!-- 播放语音 -->
+                            <controls:IconButton
+                                Icon="🔊"
+                                Command="{TemplateBinding PlayAudioCommand}"
+                                CommandParameter="{TemplateBinding Text}"
+                                ToolTip.Tip="播放语音"/>
+
+                            <!-- 复制 -->
+                            <controls:IconButton
+                                Icon="📋"
+                                Command="{TemplateBinding CopyCommand}"
+                                CommandParameter="{TemplateBinding Text}"
+                                ToolTip.Tip="复制"/>
+
+                            <!-- 移除换行 -->
+                            <controls:IconButton
+                                Icon="↩️"
+                                Command="{TemplateBinding RemoveLineBreaksCommand}"
+                                ToolTip.Tip="移除换行"/>
+
+                            <!-- 移除空格 -->
+                            <controls:IconButton
+                                Icon="␣"
+                                Command="{TemplateBinding RemoveSpacesCommand}"
+                                ToolTip.Tip="移除空格"/>
+
+                            <!-- 💡 语言识别状态 - ProgressRing -->
+                            <Panel IsVisible="{TemplateBinding IsIdentify}">
+                                <TextBlock Text="🔄" FontSize="16" VerticalAlignment="Center"/>
+                            </Panel>
+
+                            <!-- 💡 识别出的语言显示 -->
+                            <Border Padding="5,3"
+                                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    VerticalAlignment="Center">
+                                <Border.IsVisible>
+                                    <Binding Path="IdentifiedLanguage" RelativeSource="{RelativeSource TemplatedParent}">
+                                        <Binding.Converter>
+                                            <x:Static Member="StringConverters.IsNotNullOrEmpty"/>
+                                        </Binding.Converter>
+                                    </Binding>
+                                </Border.IsVisible>
+                                <TextBlock FontSize="12" VerticalAlignment="Center">
+                                    <Run Text="识别: "/>
+                                    <Run Text="{TemplateBinding IdentifiedLanguage}"/>
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- 💡 字体大小调节提示 (淡入淡出效果) -->
+                        <Border x:Name="PART_FontSizeHintBorder"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="#A0000000"
+                                CornerRadius="10"
+                                IsHitTestVisible="False"
+                                IsVisible="False"
+                                Opacity="0">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:1.2"/>
+                                </Transitions>
+                            </Border.Transitions>
+                            <StackPanel Margin="12,8" Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="🔤" FontSize="16" Foreground="White" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="PART_FontSizeText"
+                                           FontSize="15"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           Text="{TemplateBinding CurrentFontSize}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

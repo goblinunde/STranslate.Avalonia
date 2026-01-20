@@ -1,0 +1,157 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:STranslate.Avalonia.ViewModels"
+        xmlns:controls="using:STranslate.Avalonia.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="470" d:DesignHeight="600"
+        x:Class="STranslate.Avalonia.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="STranslate"
+        Width="470"
+        MinWidth="400"
+        MinHeight="200"
+        ShowInTaskbar="False"
+        Topmost="{Binding IsTopmost}"
+        WindowStartupLocation="Manual"
+        Icon="/Assets/app.ico">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <!-- 💡 Avalonia 使用 KeyBindings 代替 InputBindings -->
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+        <KeyBinding Gesture="Ctrl+Shift+Q" Command="{Binding ExitCommand}"/>
+    </Window.KeyBindings>
+
+    <Grid>
+        <!-- 💡 顶部工具栏 -->
+        <controls:HeaderControl
+            Padding="6,4,6,0"
+            VerticalAlignment="Top"
+            IsTopmost="{Binding IsTopmost}"
+            SettingCommand="{Binding OpenSettingsCommand}"
+            HistoryPreviousCommand="{Binding HistoryPreviousCommand}"
+            HistoryNextCommand="{Binding HistoryNextCommand}"
+            ColorSchemeCommand="{Binding ChangeColorSchemeCommand}"
+            IsHideInput="{Binding IsHideInput}"
+            IsMouseHook="{Binding IsMouseHook}"
+            ScreenshotTranslateCommand="{Binding ScreenshotTranslateCommand}"
+            OcrCommand="{Binding OcrCommand}"
+            IsAutoTranslate="{Binding IsAutoTranslate}"/>
+
+        <!-- 💡 主内容区域 -->
+        <ScrollViewer Margin="10,40,0,5">
+            <StackPanel>
+                <!-- 💡 输入控件 -->
+                <controls:InputControl
+                    x:Name="PART_Input"
+                    Margin="0,0,10,10"
+                    Text="{Binding InputText, Mode=TwoWay}"
+                    IdentifiedLanguage="{Binding IdentifiedLanguage}"
+                    IsIdentify="{Binding IsIdentifyProcessing}"
+                    CurrentFontSize="{Binding Settings.FontSize}"
+                    ExecuteCommand="{Binding TranslateCommand}"
+                    ForceExecuteCommand="{Binding TranslateCommand}"
+                    SaveToVocabularyCommand="{Binding SaveToVocabularyCommand}"
+                    HasActivedVocabulary="{Binding VocabularyService.HasActivedVocabulary}"
+                    PlayAudioCommand="{Binding PlayAudioCommand}"
+                    CopyCommand="{Binding CopyCommand}"
+                    RemoveLineBreaksCommand="{Binding RemoveLineBreaksCommand}"
+                    RemoveSpacesCommand="{Binding RemoveSpacesCommand}"
+                    TranslateOnPaste="{Binding Settings.TranslateOnPaste}"/>
+
+                <!-- 💡 翻译按钮 -->
+                <Button 
+                    Content="翻译"
+                    Command="{Binding TranslateCommand}"
+                    HorizontalAlignment="Center"
+                    Padding="40,10"
+                    Margin="0,10"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Classes="accent" />
+
+                <!-- 💡 语言选择区域 -->
+                <Grid Margin="0,0,10,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 源语言 -->
+                    <ComboBox Grid.Column="0"
+                              HorizontalAlignment="Stretch"
+                              SelectedIndex="0">
+                        <ComboBoxItem Content="自动检测"/>
+                        <ComboBoxItem Content="中文"/>
+                        <ComboBoxItem Content="英语"/>
+                        <ComboBoxItem Content="日语"/>
+                    </ComboBox>
+
+                    <!-- 交换按钮 -->
+                    <Button Grid.Column="1"
+                            Margin="10,0"
+                            Content="⇆"
+                            ToolTip.Tip="交换语言"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Command="{Binding SwapLanguageCommand}"/>
+
+                    <!-- 目标语言 -->
+                    <ComboBox Grid.Column="2"
+                              HorizontalAlignment="Stretch"
+                              SelectedIndex="1">
+                        <ComboBoxItem Content="中文"/>
+                        <ComboBoxItem Content="英语"/>
+                        <ComboBoxItem Content="日语"/>
+                    </ComboBox>
+                </Grid>
+
+                <!-- 💡 翻译结果输出 (简化版) -->
+                <Border Margin="0,0,10,0"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="12">
+                    <StackPanel Spacing="10">
+                        <!-- 标题栏 -->
+                        <DockPanel>
+                            <TextBlock Text="翻译结果" 
+                                      FontWeight="Bold" 
+                                      FontSize="14"
+                                      DockPanel.Dock="Left"/>
+                            <StackPanel DockPanel.Dock="Right" 
+                                       Orientation="Horizontal" 
+                                       Spacing="4"
+                                       HorizontalAlignment="Right">
+                                <controls:IconButton
+                                    Icon="🔊"
+                                    ToolTip.Tip="播放语音"
+                                    Command="{Binding PlayAudioCommand}"/>
+                                <controls:IconButton
+                                    Icon="📋"
+                                    ToolTip.Tip="复制"
+                                    Command="{Binding CopyCommand}"/>
+                            </StackPanel>
+                        </DockPanel>
+
+                        <!-- 翻译结果文本 -->
+                        <TextBox Text="{Binding OutputText, Mode=TwoWay}"
+                                IsReadOnly="True"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                TextWrapping="Wrap"
+                                MinHeight="100"
+                                FontSize="14"
+                                Watermark="翻译结果将显示在这里..."/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

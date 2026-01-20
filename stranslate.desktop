@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=STranslate
+Comment=Translation and OCR Tool for Linux
+Exec=/opt/STranslate.Avalonia/STranslate.Avalonia
+Icon=/opt/STranslate.Avalonia/Assets/app.ico
+Terminal=false
+Type=Application
+Categories=Utility;Translation;
+Keywords=translate;translation;dictionary;ocr;
+StartupWMClass=STranslate.Avalonia

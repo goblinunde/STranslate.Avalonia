@@ -1,0 +1,177 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:STranslate.Avalonia.Controls">
+
+    <!-- 💡 OutputControl样式定义 - 翻译输出控件 (完整版) -->
+    <Style Selector="controls|OutputControl">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <!-- 💡 使用 ItemsPresenter 显示多个翻译服务的结果 -->
+                <ScrollViewer>
+                    <ItemsPresenter Margin="0,0,10,0"/>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+        
+        <!-- 💡 ItemsPanel: 垂直StackPanel布局 -->
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Spacing="5"/>
+            </ItemsPanelTemplate>
+        </Setter>
+    </Style>
+
+    <!-- 💡 每个翻译服务结果的模板 -->
+    <Style Selector="controls|OutputControl > ContentPresenter" x:DataType="x:Object">
+        <Setter Property="ContentTemplate">
+            <DataTemplate>
+                <!-- 💡 Expander: 展开/收起的卡片 -->
+                <Expander>
+                    <Expander.Header>
+                        <DockPanel>
+                            <!-- 💡 左侧: 服务图标和名称 -->
+                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Spacing="10">
+                                <!-- 服务图标 (占位符) -->
+                                <TextBlock Text="🌐" FontSize="18" VerticalAlignment="Center"/>
+                                
+                                <!-- 服务名称 -->
+                                <TextBlock Text="翻译服务" 
+                                           FontSize="12" 
+                                           VerticalAlignment="Center"
+                                           FontWeight="Medium"/>
+                                
+                                <!-- 加载状态 (占位符) -->
+                                <TextBlock Text="🔄" 
+                                           FontSize="16" 
+                                           VerticalAlignment="Center"
+                                           IsVisible="False"/>
+                            </StackPanel>
+
+                            <!-- 💡 右侧: 操作按钮 -->
+                            <StackPanel DockPanel.Dock="Right" 
+                                        Orientation="Horizontal" 
+                                        Spacing="10"
+                                        HorizontalAlignment="Right">
+                                <!-- 重试按钮 -->
+                                <controls:IconButton
+                                    Icon="🔄"
+                                    ToolTip.Tip="重试"/>
+                                
+                                <!-- 设置按钮 -->
+                                <controls:IconButton
+                                    Icon="⚙️"
+                                    ToolTip.Tip="设置"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </Expander.Header>
+
+                    <Expander.Content>
+                        <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="10">
+                            <StackPanel Spacing="10">
+                                <!-- 💡 翻译结果文本 -->
+                                <TextBox Text="Translation result will appear here"
+                                         IsReadOnly="True"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         TextWrapping="Wrap"
+                                         FontSize="14"/>
+
+                                <!-- 💡 工具栏按钮 -->
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <!-- 播放语音 -->
+                                    <controls:IconButton
+                                        Icon="🔊"
+                                        ToolTip.Tip="播放语音"/>
+
+                                    <!-- 复制 -->
+                                    <controls:IconButton
+                                        Icon="📋"
+                                        ToolTip.Tip="复制"/>
+
+                                    <!-- PascalCase -->
+                                    <controls:IconButton
+                                        Icon="Aa"
+                                        ToolTip.Tip="复制为PascalCase"/>
+
+                                    <!-- camelCase -->
+                                    <controls:IconButton
+                                        Icon="aA"
+                                        ToolTip.Tip="复制为camelCase"/>
+
+                                    <!-- snake_case -->
+                                    <controls:IconButton
+                                        Icon="a_a"
+                                        ToolTip.Tip="复制为snake_case"/>
+
+                                    <!-- 插入 -->
+                                    <controls:IconButton
+                                        Icon="📥"
+                                        ToolTip.Tip="插入文本"/>
+
+                                    <!-- 回译 -->
+                                    <controls:IconButton
+                                        Icon="⚡"
+                                        ToolTip.Tip="回译"/>
+                                </StackPanel>
+
+                                <!-- 💡 词典模式专用: 音标、词性、例句等 -->
+                                <!-- TODO: 根据TransResult类型动态显示 -->
+                                <Border Background="{DynamicResource SubtleFillColorSecondaryBrush}"
+                                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="8"
+                                        IsVisible="False">
+                                    <StackPanel Spacing="6">
+                                        <!-- 音标 -->
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <Border Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                                    CornerRadius="2"
+                                                    Padding="4,2">
+                                                <TextBlock Text="US" 
+                                                           FontSize="10" 
+                                                           Foreground="White"/>
+                                            </Border>
+                                            <TextBlock Text="/həˈloʊ/" 
+                                                       FontFamily="Consolas"
+                                                       FontSize="12"/>
+                                            <controls:IconButton Icon="🔊" IconSize="12"/>
+                                        </StackPanel>
+
+                                        <!-- 词性和释义 -->
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="n." 
+                                                       FontWeight="Medium"
+                                                       Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                                                       Margin="0,0,8,0"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="问候; 打招呼"
+                                                       TextWrapping="Wrap"/>
+                                        </Grid>
+
+                                        <!-- 例句 -->
+                                        <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                                CornerRadius="4"
+                                                Padding="8,6">
+                                            <TextBlock Text="Hello, how are you?"
+                                                       FontStyle="Italic"
+                                                       TextWrapping="Wrap"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </Expander.Content>
+                </Expander>
+            </DataTemplate>
+        </Setter>
+    </Style>
+</Styles>
