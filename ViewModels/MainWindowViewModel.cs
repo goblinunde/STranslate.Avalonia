@@ -3,7 +3,9 @@ using ReactiveUI;
 using STranslate.Avalonia.Models;
 using STranslate.Avalonia.Services;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reactive;
 using System.Threading;
 using System.Windows.Input;
@@ -24,6 +26,38 @@ public class MainWindowViewModel : ViewModelBase
     {
         // 💡 初始化翻译服务
         _translateService = new SimplifiedTranslateService();
+
+        // 💡 初始化语言列表
+        SourceLanguages = new List<LanguageItem>
+        {
+            new(Language.Auto),
+            new(Language.Chinese),
+            new(Language.English),
+            new(Language.Japanese),
+            new(Language.Korean),
+            new(Language.French),
+            new(Language.German),
+            new(Language.Spanish),
+            new(Language.Russian)
+        };
+
+        TargetLanguages = new List<LanguageItem>
+        {
+            new(Language.Chinese),
+            new(Language.English),
+            new(Language.Japanese),
+            new(Language.Korean),
+            new(Language.French),
+            new(Language.German),
+            new(Language.Spanish),
+            new(Language.Russian)
+        };
+
+        // 💡 设置默认选中语言
+        _selectedSourceLanguage = SourceLanguages[0];  // Auto
+        _selectedTargetLanguage = TargetLanguages[1]; // English
+
+        InitializeCommands();
     }
 
     private void InitializeCommands()
@@ -61,6 +95,38 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _identifiedLanguage;
         set => this.RaiseAndSetIfChanged(ref _identifiedLanguage, value);
+    }
+
+    // 💡 语言列表 - 用于ComboBox绑定
+    public List<LanguageItem> SourceLanguages { get; }
+    public List<LanguageItem> TargetLanguages { get; }
+
+    private LanguageItem? _selectedSourceLanguage;
+    public LanguageItem? SelectedSourceLanguage
+    {
+        get => _selectedSourceLanguage;
+        set
+        {
+            if (this.RaiseAndSetIfChanged(ref _selectedSourceLanguage, value) && value != null)
+            {
+                SourceLanguage = value.Code;
+                Debug.WriteLine($"源语言切换到: {value.DisplayName} ({value.Code})");
+            }
+        }
+    }
+
+    private LanguageItem? _selectedTargetLanguage;
+    public LanguageItem? SelectedTargetLanguage
+    {
+        get => _selectedTargetLanguage;
+        set
+        {
+            if (this.RaiseAndSetIfChanged(ref _selectedTargetLanguage, value) && value != null)
+            {
+                TargetLanguage = value.Code;
+                Debug.WriteLine($"目标语言切换到: {value.DisplayName} ({value.Code})");
+            }
+        }
     }
 
     private bool _isIdentifyProcessing = false;
@@ -218,14 +284,34 @@ public class MainWindowViewModel : ViewModelBase
     private void SwapLanguage()
     {
         // 交换源语言和目标语言
-        if (SourceLanguage == Language.Auto)
+        if (SelectedSourceLanguage == null || SelectedTargetLanguage == null)
         {
-            System.Diagnostics.Debug.WriteLine("不能交换：源语言为自动检测");
+            Debug.WriteLine("⚠️ 无法交换：语言未选择");
             return;
         }
 
-        (SourceLanguage, TargetLanguage) = (TargetLanguage, SourceLanguage);
-        System.Diagnostics.Debug.WriteLine($"语言已交换: {SourceLanguage} <-> {TargetLanguage}");
+        if (SelectedSourceLanguage.Language == Language.Auto)
+        {
+            Debug.WriteLine("⚠️ 无法交换：源语言为自动检测");
+            return;
+        }
+
+        // 查找目标语言在源语言列表中的对应项
+        var tempTarget = SelectedTargetLanguage;
+        var sourceItem = SourceLanguages.FirstOrDefault(l => l.Language == tempTarget.Language);
+        
+        if (sourceItem != null)
+        {
+            SelectedSourceLanguage = sourceItem;
+            SelectedTargetLanguage = TargetLanguages.FirstOrDefault(l => l.Language == SelectedSourceLanguage.Language) 
+                                      ?? TargetLanguages[0];
+            
+            Debug.WriteLine($"🔄 语言已交换: {SelectedSourceLanguage.DisplayName} ⇆ {SelectedTargetLanguage.DisplayName}");
+        }
+        else
+        {
+            Debug.WriteLine("⚠️ 无法交换：目标语言不在源语言列表中");
+        }
     }
 
     private void CopyText(string? text)

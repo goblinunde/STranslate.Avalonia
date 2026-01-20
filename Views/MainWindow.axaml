@@ -85,11 +85,13 @@
                     <!-- 源语言 -->
                     <ComboBox Grid.Column="0"
                               HorizontalAlignment="Stretch"
-                              SelectedIndex="0">
-                        <ComboBoxItem Content="自动检测"/>
-                        <ComboBoxItem Content="中文"/>
-                        <ComboBoxItem Content="英语"/>
-                        <ComboBoxItem Content="日语"/>
+                              ItemsSource="{Binding SourceLanguages}"
+                              SelectedItem="{Binding SelectedSourceLanguage}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
 
                     <!-- 交换按钮 -->
@@ -104,10 +106,13 @@
                     <!-- 目标语言 -->
                     <ComboBox Grid.Column="2"
                               HorizontalAlignment="Stretch"
-                              SelectedIndex="1">
-                        <ComboBoxItem Content="中文"/>
-                        <ComboBoxItem Content="英语"/>
-                        <ComboBoxItem Content="日语"/>
+                              ItemsSource="{Binding TargetLanguages}"
+                              SelectedItem="{Binding SelectedTargetLanguage}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
                 </Grid>
 
